@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - Flask Bank App</title>
+</head>
+<body>
+    <h1>Account Information</h1>
+    <p>Account Number: {{ account_number }}</p>
+
+    <h2>Cards</h2>
+    <ul>
+        {% for card in cards %}
+        <li>{{ card.type }} - **** **** **** {{ card.last_digits }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Info</h2>
+    <p>Address: {{ address }}</p>
+    <p>Email: {{ email }}</p>
+    <p>Document Number: *** *** {{ document_last_digits }}</p>
+
+    <h2>Change Password</h2>
+    <form action="{{ url_for('change_password') }}" method="post">
+        <input type="password" name="old_password" placeholder="Old Password" required>
+        <input type="password" name="new_password" placeholder="New Password" required>
+        <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
+        <button type="submit">Change Password</button>
+    </form>
+</body>
+</html>

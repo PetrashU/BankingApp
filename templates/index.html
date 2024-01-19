@@ -4,13 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask Bank App</title>
-</head>
+    <link rel="stylesheet" href='/static/styles.css' /></head>
 <body>
-    <h1>Welcome to Flask Bank App</h1>
-    <ul>
-        {% for row in data %}
-            <li>{{ row }}</li>
-        {% endfor %}
+    <ul class="menu">
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <li><a href="{{ url_for('account') }}">Account</a></li>
     </ul>
+
+    <h2>Transaction History</h2>
+    <table class="transaction-history">
+        <thead>
+            <tr>
+                <th>Receiver Name</th>
+                <th>Sum</th>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.receiver }}</td>
+                <td class="{{ 'payment' if transaction.sum > 0 else '' }}">{{ transaction.sum }}</td>
+                <td>{{ transaction.title }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

@@ -1,0 +1,178 @@
+body {
+    background-color: #1f1e22;
+    color: #e0e0e0;
+    font-family: 'DM Sans';
+}
+
+.transaction-history {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.transaction-history th, .transaction-history td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #d3d3d3; /* Milky borders */
+}
+
+.payment {
+    color: #800080; /* Purple color for payments */
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    background-color: #400040; /* Dark purple background for menu */
+}
+
+.menu li {
+    display: inline;
+    margin-right: 10px;
+}
+
+.menu a {
+    color: #e0e0e0; /* Milky text color for menu items */
+    text-decoration: none;
+    padding: 10px;
+}
+
+.menu a:hover {
+    background-color: #800080; /* Purple hover effect for menu items */
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flash-messages {
+    list-style: none;
+    padding: 0;
+}
+
+.flash-messages li {
+    background-color: #f58b8b; /* Light red background for error messages */
+    color: #ffffff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #4b0082;
+}
+
+.page-title {
+    color: #560491;
+    margin-top: 0;
+    font-size: 45px;
+}
+
+.username-form {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.username-input, .submit-button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 2px;
+    border: 2px solid transparent;
+}
+
+.username-input {
+    background-color: #724e83;
+    color: whitesmoke;
+    font-size: 15px;
+    box-shadow: 0 0 2px #fff;
+}
+
+.submit-button {
+    box-sizing: content-box;
+    background-color: #4b0082;
+    color: white;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+
+.button {
+    background-color: #4b0082;
+    color: #ffffff;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover, .submit-button:hover {
+    background-color: #5c1f5c;
+}
+
+.button:disabled {
+    background-color: #e0e0e0;
+    color: #777279;
+    cursor: not-allowed;
+}
+
+.password-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 500px;
+    margin: auto;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+}
+
+.password-input {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    text-align: center;
+    background-color: #724e83;
+    border: none;
+    box-shadow: 0 0 2px #fff;
+    color: whitesmoke;
+}
+
+.password-input:disabled {
+    background-color: #777279;
+}
+
+.number-label {
+    color: #e1ceeb;
+    font-weight: bold;
+}
+
+/* Ensure the form and container are centered */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
