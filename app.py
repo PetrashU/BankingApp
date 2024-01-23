@@ -25,7 +25,7 @@ login_manager.login_view = 'enter_username'
 limiter = Limiter(
     get_remote_address,
     app=app,
-    storage_uri="memory://"  # TODO
+    storage_uri="memory://"
 )
 
 
