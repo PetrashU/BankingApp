@@ -4,31 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask Bank App</title>
+    <link href='https://fonts.googleapis.com/css?family=DM Sans' rel='stylesheet'>
     <link rel="stylesheet" href='/static/styles.css' /></head>
 <body>
     <ul class="menu">
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-        <li><a href="{{ url_for('account') }}">Account</a></li>
+        {% if session.user_info %}
+            <li> <b> Welcome, {{ session.user_info.first_name }} {{ session.user_info.last_name }} </b></li>
+        {% endif %}
+        <div class="menu_buttons">
+            <li><a href="{{ url_for('account') }}">Account</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </div>
     </ul>
 
-    <h2>Transaction History</h2>
-    <table class="transaction-history">
-        <thead>
-            <tr>
-                <th>Receiver Name</th>
-                <th>Sum</th>
-                <th>Title</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.receiver }}</td>
-                <td class="{{ 'payment' if transaction.sum > 0 else '' }}">{{ transaction.sum }}</td>
-                <td>{{ transaction.title }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="balance-container">
+        {% if session.user_info %}
+            <b>Balance: ${{ session.user_info.balance }}</b>
+        {% endif %}
+        <div class="new-transaction-button">
+            <a href="{{ url_for('new_transaction') }}" class="button">New Transaction</a>
+        </div>
+    </div>
+    <div class="transaction-history-container">
+        <h2>Transaction History:</h2>
+        <table class="transaction-history">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Details</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in data %}
+                <tr>
+                    <td>{{ transaction.Title }}</td>
+                    <td>
+                        <div class="tooltip">
+                            {{ transaction.OtherSideName }}
+                            <span class="tooltiptext">{{ transaction.OtherSideAccountNumber }}</span>
+                        </div>
+                    </td>
+                    <td class="{{ 'payment' if transaction.Amount > 0 else '' }}">{{ '%.2f' % transaction.Amount }}</td>
+                    <td>{{ transaction.TransactionDate.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

@@ -4,29 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account - Flask Bank App</title>
+    <link href='https://fonts.googleapis.com/css?family=DM Sans' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href='/static/styles.css' />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <h1>Account Information</h1>
-    <p>Account Number: {{ account_number }}</p>
+    <p>First Name: {{ session['user_info']['first_name'] }}</p>
+    <p>Last Name: {{ session['user_info']['last_name'] }}</p>
+    <p>Account Number: {{ session['user_info']['account_number'] }}</p>
 
-    <h2>Cards</h2>
-    <ul>
-        {% for card in cards %}
-        <li>{{ card.type }} - **** **** **** {{ card.last_digits }}</li>
-        {% endfor %}
-    </ul>
+    <h2>Card:</h2>
+    **** **** **** {{ session['user_info']['card_last_digits']  }}
+        <button onclick="showFullCardNumber()" class="button">Show Full Card Number</button>
 
-    <h2>Info</h2>
-    <p>Address: {{ address }}</p>
-    <p>Email: {{ email }}</p>
-    <p>Document Number: *** *** {{ document_last_digits }}</p>
+    <h2>Info:</h2>
+    <p>Document Number: {{ session['user_info']['document_digits'][:1] }} *** {{ session['user_info']['document_digits'][-2:] }}
+        <button onclick="showFullDocument()" class="button">Show Full Document Number</button>
+    </p>
 
     <h2>Change Password</h2>
-    <form action="{{ url_for('change_password') }}" method="post">
-        <input type="password" name="old_password" placeholder="Old Password" required>
-        <input type="password" name="new_password" placeholder="New Password" required>
-        <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
-        <button type="submit">Change Password</button>
+    <form action="{{ url_for('change_password') }}" method="post" class="general-form" onsubmit="return validatePassword()">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>                
+        <input type="password" name="old_password" placeholder="Old Password" class="username-input" required>
+        <input type="password" name="new_password" placeholder="New Password" class="username-input" required>
+        <input type="password" name="confirm_password" placeholder="Confirm New Password" class="username-input" required>
+        <button type="submit" class="button">Change Password</button>
     </form>
+
+    <div class="modal fade custom-modal" id="cardNumberModal" tabindex="-1" role="dialog" aria-labelledby="cardNumberModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cardNumberModalLabel">Enter Password to View Full Card Number</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="cardNumberPasswordInput" class="form-control" placeholder="Enter your password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button" data-dismiss="modal">Close</button>
+                    <button type="button" class="button" onclick="verifyCardNumberPassword()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade custom-modal" id="documentNumberModal" tabindex="-1" role="dialog" aria-labelledby="documentNumberModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="documentNumberModalLabel">Enter Password to View Full Document Number</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="documentNumberPasswordInput" class="form-control" placeholder="Enter your password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button" data-dismiss="modal">Close</button>
+                    <button type="button" class="button" onclick="verifyDocumentNumberPassword()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var csrfToken = "{{ csrf_token() }}";
+
+        $('#cardNumberModal').on('hidden.bs.modal', function () {
+            document.getElementById('cardNumberPasswordInput').value = '';
+        });
+
+        $('#documentNumberModal').on('hidden.bs.modal', function () {
+            document.getElementById('documentNumberPasswordInput').value = '';
+        });
+
+
+        function showFullCardNumber() {
+            $('#cardNumberModal').modal('show');
+        }
+
+        function showFullDocument() {
+            $('#documentNumberModal').modal('show');
+        }
+
+        function verifyCardNumberPassword() {
+            var password = document.getElementById('cardNumberPasswordInput').value;
+            var csrfToken = "{{ csrf_token() }}";
+
+            if (password !== null && password !== "") {
+                fetch('/get_full_card_number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ password: password }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert("Full Card Number: " + data.full_card_number);
+                        $('#cardNumberModal').modal('hide');
+                    } else {
+                        alert("Incorrect password.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function verifyDocumentNumberPassword() {
+            var password = $('#documentNumberPasswordInput').val();
+            var csrfToken = "{{ csrf_token() }}";
+
+            if (password !== null && password !== "") {
+                fetch('/get_full_document_number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ password: password }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert("Full Document Number: " + data.full_document_number);
+                    } else {
+                        alert("Incorrect password.");
+                    }
+                    $('#documentNumberModal').modal('hide');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    $('#documentNumberModal').modal('hide');
+                });
+            }
+        }
+    </script>
 </body>
 </html>

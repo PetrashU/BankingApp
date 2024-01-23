@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Transaction</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=DM Sans' rel='stylesheet'>
+    <link rel="stylesheet" href='/static/styles.css' />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>New Transaction:</h1>
+    <form action="{{ url_for('new_transaction') }}" method="post" id="newTransactionForm">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>                
+        <div class="form-group row">
+            <label for="title" class="col-sm-4 col-form-label text-right">Title:</label>
+            <div class="col-sm-8">
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="other_side_name" class="col-sm-4 col-form-label text-right">Recipient's Name:</label>
+            <div class="col-sm-8">
+                <input type="text" id="other_side_name" name="other_side_name" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="other_side_account_number" class="col-sm-4 col-form-label text-right">Recipient's Account Number:</label>
+            <div class="col-sm-8">
+                <input type="text" id="other_side_account_number" name="other_side_account_number" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="amount" class="col-sm-4 col-form-label text-right">Amount:</label>
+            <div class="col-sm-8">
+                <input type="number" step="0.01" id="amount" name="amount" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="amount" class="col-sm-4 col-form-label text-right">Confirm with password:</label>
+            <div class="col-sm-8">
+                <input type="password" step="0.01" id="password" name="password" class="form-control" required>
+            </div>
+        </div>
+        <div class="back-and-confirm">
+            <a href="{{ url_for('home') }}" class="button">Back</a>
+            <button type="submit" class="button" id="confirmButton">Confirm</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#confirmButton").click(function() {
+            if (!validateNewTransactionForm()) {
+                event.preventDefault();
+            }
+        });
+
+        function validateNewTransactionForm() {
+            var title = $("#title").val().trim();
+            var otherSideName = $("#other_side_name").val().trim();
+            var otherSideAccountNumber = $("#other_side_account_number").val().trim();
+            var amount = $("#amount").val();
+            var password = $("#password").val()
+
+            if (title === "") {
+                alert("Please enter a title");
+                return false;
+            }
+
+            if (otherSideName === "") {
+                alert("Please enter the recipient's name");
+                return false;
+            }
+
+            if (otherSideAccountNumber === "") {
+                alert("Please enter the recipient's account number");
+                return false;
+            }
+
+            if (!otherSideAccountNumber.match(/^\d{2} \d{4} \d{4} \d{4} \d{4}$/)) {
+                alert("Account number must be numeric and in format xx xxxx xxxx xxxx xxxx");
+                return false;
+            }
+
+            if (amount === "" || isNaN(amount) || parseFloat(amount) <= 0) {
+                alert("Please enter a valid amount");
+                return false;
+            }
+
+            if (password === "" ){
+                alert("Please enter a password");
+                return false;
+            }
+
+            return true;
+        }
+    });
+</script>
+
+</body>
+</html>

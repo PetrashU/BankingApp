@@ -20,6 +20,7 @@
                 {% endif %}
             {% endwith %}
             <form method="post" action="{{ url_for('enter_username') }}" class="username-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>                
                 <div class="form-group">
                     <input type="text" name="username" required autocomplete="off" class="username-input">
                 </div>

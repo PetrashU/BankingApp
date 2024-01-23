@@ -7,15 +7,31 @@
 </head>
 <body>
     <h1>Add User</h1>
-    <form method="post">
+    <form method="post" action="{{ url_for('add_user_page') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>                
         <label for="username">Username:</label>
         <input type="text" name="username" required><br>
 
         <label for="password">Password:</label>
         <input type="password" name="password" required><br>
 
-        <label for="full_name">Full Name:</label>
-        <input type="text" name="full_name" required><br>
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" required><br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" required><br>
+
+        <label for="account_number">Account Number:</label>
+        <input type="text" name="account_number" required><br>
+
+        <label for="balance">Balance:</label>
+        <input type="text" name="balance" required><br>
+
+        <label for="card_number">Card Number:</label>
+        <input type="text" name="card_number" required><br>
+
+        <label for="document_number">Document Number:</label>
+        <input type="text" name="document_number" required><br>
 
         <input type="submit" value="Add User">
     </form>
