@@ -3,6 +3,7 @@ import bcrypt
 from config import DATABASE_CONFIG, AZURE_KEY
 from datetime import datetime
 from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 
 def create_connection():
@@ -95,24 +96,24 @@ def update_subpasswords(user_id, substrings):
 def encrypt(data):
     iv = get_random_bytes(16)
     cipher = AES.new(AZURE_KEY['KEY'], AES.MODE_CBC, iv)
-    padded_data = data.ljust((len(data) + 15) // 16 * 16)
-    encrypted_data = cipher.encrypt(padded_data.encode('utf-8'))
+    encrypted_data = cipher.encrypt(pad(data.encode('utf-8'), AES.block_size))
     return iv + encrypted_data
 
 def get_card_number(user_id):
     result = execute_query("SELECT EncryptedCardNumber FROM Cards WHERE UserId = ?", (user_id,))
     if result:
-        encrypted_card_number = result[0]
+        encrypted_card_number = result[0][0]
         return decrypt(encrypted_card_number)
 
 def get_document_number(user_id):
     result = execute_query("SELECT EncryptedDocumentNumber FROM Documents WHERE UserId = ?", (user_id,))
     if result:
-        encrypted_document_number = result[0]
+        encrypted_document_number = result[0][0]
         return decrypt(encrypted_document_number)
 
 def decrypt(encrypted_data):
     iv = encrypted_data[:16]
     cipher = AES.new(AZURE_KEY['KEY'], AES.MODE_CBC, iv)
-    decrypted_data = cipher.decrypt(encrypted_data[16:]).rstrip()
+    padded_decrypted_data = cipher.decrypt(encrypted_data[16:])
+    decrypted_data = unpad(padded_decrypted_data, AES.block_size)
     return decrypted_data.decode('utf-8')
