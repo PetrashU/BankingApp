@@ -24,8 +24,13 @@
     <h1>Account Information</h1>
     <p>First Name: {{ session['user_info']['first_name'] }}</p>
     <p>Last Name: {{ session['user_info']['last_name'] }}</p>
-    <p>Account Number: {{ session['user_info']['account_number'] }}</p>
-
+    <p>Account Number: 
+        {{ session['user_info']['account_number'][0:2] }} 
+        {{ session['user_info']['account_number'][2:6] }} 
+        {{ session['user_info']['account_number'][6:10] }} 
+        {{ session['user_info']['account_number'][10:14] }} 
+        {{ session['user_info']['account_number'][14:18] }}
+    </p>
     <h2>Card:</h2>
     **** **** **** {{ session['user_info']['card_last_digits']  }}
         <button onclick="showFullCardNumber()" class="button">Show Full Card Number</button>
