@@ -201,7 +201,7 @@ body {
     border: 2px solid transparent;
 }
 
-.button, .container button {
+.button, .container button, .back-button {
     background-color: #4b0082;
     color: white;
     font-size: 18px;
@@ -214,10 +214,14 @@ body {
     display: inline-block;
 }
 
-.button:hover, .submit-button:hover, .container.button:hover {
+.button:hover, .submit-button:hover, .container.button:hover, .back-button:hover {
     background-color: #5c1f5c;
     color: white;
     text-decoration: none;
+}
+
+.back-button {
+    margin-top: 20px;
 }
 
 .button:disabled {

@@ -55,43 +55,6 @@ def no_cache(response):
 def clean_flashes():
     session.pop('_flashes', None)
 
-
-@app.route('/add_user', methods=['GET', 'POST'])
-def add_user_page():
-    if request.method == 'POST':
-        username = request.form['username']
-        full_password = request.form['password']
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        account_number = request.form['account_number']
-        balance = float(request.form['balance'])
-        full_card_number = request.form['card_number']
-        full_document_number = request.form['document_number']
-
-        card_number_last_digits = full_card_number[-4:]
-        document_number_first_last_chars = full_document_number[0] + \
-            full_document_number[-2:]
-
-        user_id = add_user(username, full_password, first_name, last_name, account_number, balance,
-                           card_number_last_digits, document_number_first_last_chars)
-
-        if user_id:
-            # add_card(user_id, full_card_number)
-            # add_document(user_id, full_document_number)
-            password_combinations = get_password_combinations_by_length(
-                len(full_password))
-            hashed_substrings = []
-            for combo in password_combinations:
-                substring = ''.join(full_password[i] for i in combo)
-                hashed_substring = bcrypt.hashpw(substring.encode(
-                    'utf-8'), bcrypt.gensalt()).decode('utf-8')
-                hashed_substrings.append(hashed_substring)
-            add_subpasswords(user_id, hashed_substrings)
-
-        return redirect(url_for('home'))
-    return render_template('add_user.html')
-
-
 @app.route('/')
 @limiter.limit('10 per minute')
 @login_required

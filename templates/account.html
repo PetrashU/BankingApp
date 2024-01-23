@@ -124,7 +124,7 @@
                         alert("Full Card Number: " + data.full_card_number);
                         $('#cardNumberModal').modal('hide');
                     } else {
-                        alert("Incorrect password.");
+                        alert("Incorrect password");
                     }
                 })
                 .catch(error => {
@@ -151,7 +151,7 @@
                     if (data.result === 'success') {
                         alert("Full Document Number: " + data.full_document_number);
                     } else {
-                        alert("Incorrect password.");
+                        alert("Incorrect password");
                     }
                     $('#documentNumberModal').modal('hide');
                 })
@@ -160,6 +160,24 @@
                     $('#documentNumberModal').modal('hide');
                 });
             }
+        }
+        function validatePassword() {
+            var newPassword = document.getElementsByName('new_password')[0].value;
+            var confirmPassword = document.getElementsByName('confirm_password')[0].value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match.');
+                return false;
+            }
+
+            var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}$/;
+
+            if (!passwordRegex.test(newPassword)) {
+                alert('Password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.');
+                return false;
+            }
+
+            return true;
         }
     </script>
 </body>
